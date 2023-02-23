@@ -2322,7 +2322,7 @@ extern "C" {
 			ASSERT_FATAL(fsInitialize());
 			ASSERT_FATAL(fsdevMountSdmc());
 			ASSERT_FATAL(hidInitialize());      // Controller inputs and Touch
-			if (hosversionAtLeast(16,0,0))
+			if (!hosversionAtLeast(16,0,0))
 				ASSERT_FATAL(plInitialize(PlServiceType_User));       // Font data
 			else 
 				ASSERT_FATAL(plInitialize(PlServiceType_System));
