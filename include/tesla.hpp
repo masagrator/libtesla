@@ -2331,6 +2331,11 @@ extern "C" {
 			ASSERT_FATAL(hidsysInitialize());   // Focus control
 			ASSERT_FATAL(setsysInitialize());   // Settings querying
 		});
+		Service *plSrv = plGetServiceSession();
+		Service plClone;
+		ASSERT_FATAL(serviceClone(plSrv, &plClone));
+		serviceClose(plSrv);
+		*plSrv = plClone;
 	}
 
 	/**
