@@ -89,6 +89,8 @@ u8 TeslaFPS = 60;
 u8 alphabackground = 0xD;
 bool FullMode = true;
 PadState pad;
+uint16_t framebufferWidth = 448;
+uint16_t framebufferHeight = 720;
 
 using namespace std::literals::chrono_literals;
 
@@ -100,6 +102,8 @@ namespace tsl {
 
 		constexpr u32 ScreenWidth = 1920;       ///< Width of the Screen
 		constexpr u32 ScreenHeight = 1080;      ///< Height of the Screen
+		constexpr u32 LayerMaxWidth = 1280;
+		constexpr u32 LayerMaxHeight = 720;
 
 		extern u16 LayerWidth;                  ///< Width of the Tesla layer
 		extern u16 LayerHeight;                 ///< Height of the Tesla layer
@@ -720,10 +724,10 @@ namespace tsl {
 
 				cfg::LayerPosX = 0;
 				cfg::LayerPosY = 0;
-				cfg::FramebufferWidth  = 448;
-				cfg::FramebufferHeight = 720;
-				cfg::LayerWidth  = cfg::ScreenHeight * (float(cfg::FramebufferWidth) / float(cfg::FramebufferHeight));
-				cfg::LayerHeight = cfg::ScreenHeight;
+				cfg::FramebufferWidth = framebufferWidth;
+				cfg::FramebufferHeight = framebufferHeight;
+				cfg::LayerWidth  = cfg::ScreenWidth * (float(cfg::FramebufferWidth) / float(cfg::LayerMaxWidth));
+				cfg::LayerHeight = cfg::ScreenHeight * (float(cfg::FramebufferHeight) / float(cfg::LayerMaxHeight));
 
 				if (this->m_initialized)
 					return;
