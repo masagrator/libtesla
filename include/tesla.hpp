@@ -772,7 +772,25 @@ namespace tsl {
 
 				ViLayer layerCopy = this->m_layer;
 
-				framebufferClose(&this->m_framebuffer);
+				//framebufferClose(&this->m_framebuffer);
+				Framebuffer* fb = &this->m_framebuffer;
+				if (!fb || !fb->has_init)
+					return;
+
+				if (fb->buf_linear)
+					free(fb->buf_linear);
+
+				if (fb->buf) {
+					nwindowReleaseBuffers(fb->win);
+					nvMapClose(&fb->map);
+					free(fb->buf);
+				}
+
+				memset(fb, 0, sizeof(*fb));
+				nvFenceExit();
+				nvMapExit();
+				svcSleepThread(10'000'000);
+				nvExit();
 				nwindowClose(&this->m_window);
 				viCloseLayer(&this->m_layer);
 				viDestroyManagedLayer(&layerCopy); // Copy is required because viCloseLayer wipes the passed layer object
