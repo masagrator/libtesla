@@ -486,7 +486,7 @@ namespace tsl {
 			 * @param y Y pos
 			 * @param color Color
 			 */
-			inline void setPixel(s16 x, s16 y, Color color) {
+			inline void setPixel(s32 x, s32 y, Color color) {
 				if (x < 0 || y < 0 || x >= cfg::FramebufferWidth || y >= cfg::FramebufferHeight)
 					return;
 
@@ -514,7 +514,7 @@ namespace tsl {
 			 * @param y Y pos
 			 * @param color Color
 			 */
-			inline void setPixelBlendSrc(s16 x, s16 y, Color color) {
+			inline void setPixelBlendSrc(s32 x, s32 y, Color color) {
 				if (x < 0 || y < 0 || x >= cfg::FramebufferWidth || y >= cfg::FramebufferHeight)
 					return;
 
@@ -537,7 +537,7 @@ namespace tsl {
 			 * @param y Y pos
 			 * @param color Color
 			 */
-			inline void setPixelBlendDst(s16 x, s16 y, Color color) {
+			inline void setPixelBlendDst(s32 x, s32 y, Color color) {
 				if (x < 0 || y < 0 || x >= cfg::FramebufferWidth || y >= cfg::FramebufferHeight)
 					return;
 
@@ -562,7 +562,7 @@ namespace tsl {
 			 * @param h Height
 			 * @param color Color
 			 */
-			inline void drawRect(s16 x, s16 y, s16 w, s16 h, Color color) {
+			inline void drawRect(s32 x, s32 y, s16 w, s16 h, Color color) {
 				for (s16 x1 = x; x1 < (x + w); x1++)
 					for (s16 y1 = y; y1 < (y + h); y1++)
 						this->setPixelBlendDst(x1, y1, color);
@@ -577,7 +577,7 @@ namespace tsl {
 			 * @param h Height
 			 * @param color Color
 			 */
-			inline void drawEmptyRect(s16 x, s16 y, s16 w, s16 h, Color color) {
+			inline void drawEmptyRect(s32 x, s32 y, s16 w, s16 h, Color color) {
 				if (x < 0 || y < 0 || x >= cfg::FramebufferWidth || y >= cfg::FramebufferHeight)
 					return;
 
@@ -596,27 +596,27 @@ namespace tsl {
 			 * @param y1 End Y pos
 			 * @param color Color
 			 */
-			inline void drawLine(s16 x0, s16 y0, s16 x1, s16 y1, Color color) {
+			inline void drawLine(s32 x0, s32 y0, s32 x1, s32 y1, Color color) {
 
 				if ((x0 == x1) && (y0 == y1)) {
 					this->setPixelBlendDst(x0, y0, color);
 					return;
 				}
 
-				s16 x_max = std::max(x0, x1);
-				s16 y_max = std::max(y0, y1);
-				s16 x_min = std::min(x0, x1);
-				s16 y_min = std::min(y0, y1);
+				s32 x_max = std::max(x0, x1);
+				s32 y_max = std::max(y0, y1);
+				s32 x_min = std::min(x0, x1);
+				s32 y_min = std::min(y0, y1);
 
 				if (x_min < 0 || y_min < 0 || x_min >= cfg::FramebufferWidth || y_min >= cfg::FramebufferHeight)
 					return;
 
 				// y = mx + b
-				s16 dy = y_max - y_min;
-				s16 dx = x_max - x_min;
+				s32 dy = y_max - y_min;
+				s32 dx = x_max - x_min;
 
 				if (dx == 0) {
-					for (s16 y = y_min; y <= y_max; y++) {
+					for (s32 y = y_min; y <= y_max; y++) {
 						this->setPixelBlendDst(x_min, y, color);
 					}
 					return;
@@ -625,9 +625,9 @@ namespace tsl {
 				float m = (float)dy / float(dx);
 				float b = y_min - (m * x_min);
 
-				for (s16 x = x_min; x <= x_max; x++) {
-					s16 y = std::lround((m * (float)x) + b);
-					s16 y_end = std::lround((m * (float)(x+1)) + b);
+				for (s32 x = x_min; x <= x_max; x++) {
+					s32 y = std::lround((m * (float)x) + b);
+					s32 y_end = std::lround((m * (float)(x+1)) + b);
 					if (y == y_end) {
 						if (x <= x_max && y <= y_max)
 							this->setPixelBlendDst(x, y, color);
@@ -651,28 +651,28 @@ namespace tsl {
 			 * @param line_width How long one line can be
 			 * @param color Color
 			 */
-			inline void drawDashedLine(s16 x0, s16 y0, s16 x1, s16 y1, s16 line_width, Color color) {
+			inline void drawDashedLine(s32 x0, s32 y0, s32 x1, s32 y1, s32 line_width, Color color) {
 				// Source of formula: https://www.cc.gatech.edu/grads/m/Aaron.E.McClennen/Bresenham/code.html
 
-				s16 x_min = std::min(x0, x1);
-				s16 x_max = std::max(x0, x1);
-				s16 y_min = std::min(y0, y1);
-				s16 y_max = std::max(y0, y1);
+				s32 x_min = std::min(x0, x1);
+				s32 x_max = std::max(x0, x1);
+				s32 y_min = std::min(y0, y1);
+				s32 y_max = std::max(y0, y1);
 
 				if (x_min < 0 || y_min < 0 || x_min >= cfg::FramebufferWidth || y_min >= cfg::FramebufferHeight)
 					return;
 
-				s16 dx = x_max - x_min;
-				s16 dy = y_max - y_min;
-				s16 d = 2 * dy - dx;
-				s16 incrE = 2*dy;
-				s16 incrNE = 2*(dy - dx);
+				s32 dx = x_max - x_min;
+				s32 dy = y_max - y_min;
+				s32 d = 2 * dy - dx;
+				s32 incrE = 2*dy;
+				s32 incrNE = 2*(dy - dx);
 
 				this->setPixelBlendDst(x_min, y_min, color);
 
-				s16 x = x_min;
-				s16 y = y_min;
-				s16 rendered = 0;
+				s32 x = x_min;
+				s32 y = y_min;
+				s32 rendered = 0;
 
 				while(x < x1) {
 					if (d <= 0) {
@@ -852,7 +852,7 @@ namespace tsl {
 			void *m_currentFramebuffer = nullptr;
 			
 			bool m_scissoring = false;
-			u16 m_scissorBounds[4];
+			s16 m_scissorBounds[4];
 
 			stbtt_fontinfo m_stdFont, m_extFont;
 
@@ -927,7 +927,7 @@ namespace tsl {
 			 * @param y Y Pos
 			 * @return Offset
 			 */
-			const u32 getPixelOffset(u32 x, u32 y) {
+			const u32 getPixelOffset(s32 x, s32 y) {
 				if (this->m_scissoring) {
 					if (x < this->m_scissorBounds[0] ||
 						y < this->m_scissorBounds[1] ||
@@ -1096,8 +1096,8 @@ namespace tsl {
 				if (glyphBmp == nullptr)
 					return;
 
-				for (s16 bmpY = 0; bmpY < height; bmpY++) {
-					for (s16 bmpX = 0; bmpX < width; bmpX++) {
+				for (s32 bmpY = 0; bmpY < height; bmpY++) {
+					for (s32 bmpX = 0; bmpX < width; bmpX++) {
 						Color tmpColor = color;
 						tmpColor.a = (glyphBmp[width * bmpY + bmpX] >> 4) * (float(tmpColor.a) / 0xF);
 						this->setPixelBlendSrc(x + bmpX, y + bmpY, tmpColor);
